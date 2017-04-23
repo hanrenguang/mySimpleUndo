@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Editor</title>
+    <script type="text/javascript" src="../mySimpleUndo.js"></script>
+    <script type="text/javascript" src="./lib/util.js"></script>
+</head>
+<body>
+    <button type="button" name="button" class="undo">undo</button>
+    <button type="button" name="button" class="redo">redo</button>
+    <div class="editor" contenteditable="true">edit here</div>
+
+    <script type="text/javascript">
+        let stack = new Undo(),
+            undoBtn = $(".undo"),
+            redoBtn = $(".redo"),
+            editArea = $(".editor");
+
+        // 定义每次更新操作
+        stack.update = function () {
+            $.setDisabled(undoBtn, !stack.canUndo());
+            $.setDisabled(redoBtn, !stack.canRedo());
+        };
+        stack.update();
+
+        // 设置输入新内容时的操作
+        let timer = null,
+            oldVal = editArea.innerHTML;
+        $.on(document, "keyup", function () {
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                let newVal = editArea.innerHTML;
+
+                if(oldVal === newVal) {
+                    return;
+                }
+
+                stack.execute(new Command(editArea, oldVal, newVal));
+                oldVal = newVal;
+            }, 250);
+        });
+
+        // 按钮点击事件
+        $.delegate(document, "button", "click", function () {
+            let prop = this.className;
+            stack[prop]();
+        });
+    </script>
+</body>
+</html>
