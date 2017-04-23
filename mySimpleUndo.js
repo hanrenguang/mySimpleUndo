@@ -14,10 +14,10 @@
 		/**
 		 * 重做撤销构造函数
 		 */
-        function Undo() {
+		function Undo() {
 			this.commands = [];
 			this.index = -1;
-        }
+		}
 
 		/**
 		 * 执行函数
