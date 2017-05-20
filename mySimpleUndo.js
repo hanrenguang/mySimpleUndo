@@ -91,5 +91,10 @@
 
 		global.Undo = Undo;
 		global.Command = Command;
+
+		return {
+			Undo: Undo,
+			Command: Command
+		};
     };
 })(this))
